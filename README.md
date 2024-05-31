@@ -11,7 +11,10 @@ This python script uses `ffmpeg-python` and Assembly AI, both are free but must 
 $ git clone https://github.com/gmarzloff/scidvidprocessor.git
 ```
 
-## Install libraries from a terminal (I found that Gitbash worked best)
+## Install libraries from a terminal 
+
+I found that Gitbash caused fewer path headaches with python and git in Windows.
+
 ```bash
 $ pip install ffmpeg
 $ pip install assemblyai
