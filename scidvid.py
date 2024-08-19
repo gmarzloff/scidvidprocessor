@@ -5,13 +5,13 @@ from PIL import Image
 import os
 import sys
 
-filename_no_ext         = "open_slot_mgmt"
+filename_no_ext         = "arttherapy"
 key_filename            = "private/assemblyai.key"
-video_source_filename   = "media/" + filename_no_ext + ".mp4"
-audio_output_filename   = "media/" + filename_no_ext + "_audio.m4a"
-captions_output         = "media/" + filename_no_ext + "_captions.srt"
-video_with_subs_filename= "media/" + filename_no_ext + "_withsubs.mp4"
-qrcode_filename         = "media/" + filename_no_ext + "_qrcode.jpg"
+video_source_filename   = "media/" + filename_no_ext + "/" + filename_no_ext + ".mp4"
+audio_output_filename   = "media/" + filename_no_ext + "/" + filename_no_ext + "_audio.m4a"
+captions_output         = "media/" + filename_no_ext + "/" + filename_no_ext + "_captions.srt"
+video_with_subs_filename= "media/" + filename_no_ext + "/" + filename_no_ext + "_withsubs.mp4"
+qrcode_filename         = "media/" + filename_no_ext + "/" + filename_no_ext + "_qrcode.png"
 
 # download youtube file (this one requires audio and video separately)
 # https://ytdl.hamsterlabs.de/
@@ -69,8 +69,9 @@ def burn_overlays(include_qrcode=True):
     if include_qrcode:
         qr_w, qr_h = PIL.Image.open(qrcode_filename).size
         vid_w, vid_h = get_video_size()
+        padding = 50 # to avoid being cutoff on the TV border 
         video_qrcode_layer = ffmpeg.input(qrcode_filename)      
-        overlaid_QRcode = ffmpeg.overlay(video_stream,video_qrcode_layer, x=vid_w-qr_w, y=0)
+        overlaid_QRcode = ffmpeg.overlay(video_stream,video_qrcode_layer, x=vid_w-qr_w-padding, y=padding)
         output_final = ffmpeg.output(overlaid_QRcode, audio_stream, video_with_subs_filename)
         output_final.overwrite_output().run()
 
@@ -78,8 +79,9 @@ def burn_overlays(include_qrcode=True):
         output_final = ffmpeg.output(video_stream, audio_stream, video_with_subs_filename)
         output_final.overwrite_output().run()
 
-if len(sys.argv)>1:
-    match sys.argv[1]:
+if len(sys.argv)>2:
+    filename_no_ext = sys.argv[1]
+    match sys.argv[2]:
         case "audio":
             extract_audio()
         case "captions":
@@ -87,6 +89,6 @@ if len(sys.argv)>1:
         case "burn":
             burn_overlays()
 else: 
-    print("Error, no command. Add audio | captions | burn after the script name." )
+    print("Error, missing file prefix or command. e.g. python scidvid.py arttherapy [audio|captions|burn]" )
 
 

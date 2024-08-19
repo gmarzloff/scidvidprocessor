@@ -21,7 +21,7 @@ $ pip install assemblyai
 ```
 ## Acquire video (and maybe audio track)
 
-First, create a media folder in the repository. It is ignored from version control. The script is setup to find the files based on the same base name, for example: 
+First, create a media folder and a subfolder with the video name in the repository. `media/` is ignored from version control. The script is setup to find the files based on the same base name (passed as the first argument in the bash command). For example: 
 ```
 filename_no_ext         = "open_slot_mgmt"
 video_source_filename   = "media/" + filename_no_ext + ".mp4"
@@ -77,7 +77,15 @@ You may want to resize the image depending on the size of your video file. A 300
 ## Render the video
 
 ```bash
-$ python scidvid.py burn
+$ python scidvid.py open_slot_mgmt burn
 ```
+
+|command |function called |
+|---|---|
+|audio|extract_audio()|
+|captions|generate_captions()|
+|burn|burn_overlays()|
+
+
 
 ffmpeg-python will generate a new video file in the same folder. Expect the processing to take about 40% slower than the duration of the video file. The status tells you in the terminal. Go get coffee!
